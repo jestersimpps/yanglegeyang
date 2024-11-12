@@ -51,10 +51,10 @@ const Grid: FC = () => {
          name={tile.icon}
          style={{
           background: tile.isCovered 
-            ? `rgb(${30 + layerIndex * 30}, ${30 + layerIndex * 30}, ${30 + layerIndex * 30})`
+            ? `rgb(${60 + layerIndex * 30}, ${60 + layerIndex * 30}, ${60 + layerIndex * 30})`
             : layerIndex === 2 
               ? 'rgb(240, 240, 240)'
-              : `rgb(${30 + (layers.length - 1) * 30}, ${30 + (layers.length - 1) * 30}, ${30 + (layers.length - 1) * 30})`,
+              : `rgb(${60 + (layers.length - 1) * 30}, ${60 + (layers.length - 1) * 30}, ${60 + (layers.length - 1) * 30})`,
           border: `1px solid black`,
          }}
         />
