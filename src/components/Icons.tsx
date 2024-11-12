@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-export type IconName = "🍎" | "🌟" | "🎈" | "🎮" | "🎨" | "🎭" | "💎" | "🎪";
+export type IconName = "🍎" | "🌟" | "🎈" | "🎮" | "🎨" | "🎭" | "💎" | "🎪" | "🌈" | "🎵" | "🎲" | "🎯";
 
 interface IconProps {
  name: IconName;
@@ -29,4 +29,8 @@ export const ICONS: IconName[] = [
  "🎭",
  "💎",
  "🎪",
+ "🌈",
+ "🎵",
+ "🎲",
+ "🎯",
 ];
