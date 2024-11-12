@@ -47,16 +47,9 @@ const updateCoveredStatus = (layers: GameState['layers']): GameState['layers'] =
 
 const distributeIcons = (gridSize: number, layerIndex: number) => {
   const totalTiles = gridSize * gridSize;
-  const iconRepetitions = Math.ceil(totalTiles / ICONS.length);
-  const allIcons = ICONS.flatMap((icon) =>
-    Array(iconRepetitions).fill(icon)
-  ).slice(0, totalTiles);
-
-  // Shuffle icons
-  for (let i = allIcons.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]];
-  }
+  const allIcons: IconName[] = Array(totalTiles).fill(null).map(() => 
+    ICONS[Math.floor(Math.random() * ICONS.length)]
+  );
 
   return allIcons.map((icon, index) => ({
     icon,
