@@ -113,15 +113,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
           : layer
       );
 
-      const newState = {
+      // First update the holding area and layers
+      set({
         layers: updateCoveredStatus(newLayers),
         holdingArea: newHoldingArea,
-      };
-
-      // Set the new state and then check for triplets
-      set(newState);
+      });
+      
+      // Then check for triplets
       get().checkAndRemoveTriplets();
-      return newState;
+      
+      // Return the current state after triplet removal
+      return get();
     });
   },
 
