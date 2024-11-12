@@ -42,7 +42,7 @@ const Grid: FC = () => {
         {bottomCells.map((icon, index) => (
           <div 
             key={index}
-            className="aspect-square flex items-center justify-center"
+            className="aspect-square flex items-center justify-center p-0 m-0"
           >
             {icon && <Icon name={icon} />}
           </div>

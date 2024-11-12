@@ -8,7 +8,7 @@ interface IconProps {
 
 export const Icon: FC<IconProps> = ({ name }) => {
   return (
-    <div className="flex items-center justify-center text-4xl w-[60px] h-[60px] bg-gradient-to-br from-gray-200 via-white to-gray-100 rounded-xl shadow-lg transform transition-all hover:scale-105 hover:-translate-y-1 cursor-pointer"
+    <div className="flex items-center justify-center text-4xl w-full h-full bg-gradient-to-br from-gray-200 via-white to-gray-100 rounded-xl shadow-lg transform transition-all hover:scale-105 hover:-translate-y-1 cursor-pointer m-0 p-0"
          style={{
            transform: 'perspective(800px) rotateX(25deg)',
            boxShadow: `
