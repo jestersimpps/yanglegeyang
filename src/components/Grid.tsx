@@ -8,16 +8,24 @@ const Grid: FC = () => {
 
   useEffect(() => {
     const newCells = Array(64).fill(null)
-    ICONS.forEach(icon => {
-      // Place each icon 3 times
-      for (let i = 0; i < 3; i++) {
-        let position
-        do {
-          position = Math.floor(Math.random() * 64)
-        } while (newCells[position] !== null)
-        newCells[position] = icon
-      }
-    })
+    let remainingCells = 64
+    
+    while (remainingCells > 0) {
+      ICONS.forEach(icon => {
+        // Place icons in groups of 3 until grid is full
+        if (remainingCells >= 3) {
+          for (let i = 0; i < 3; i++) {
+            let position
+            do {
+              position = Math.floor(Math.random() * 64)
+            } while (newCells[position] !== null)
+            newCells[position] = icon
+          }
+          remainingCells -= 3
+        }
+      })
+    }
+    
     setCells(newCells)
   }, [])
 
