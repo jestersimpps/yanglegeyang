@@ -1,43 +1,16 @@
-"use client";
+'use client'
 
-import { FC, useEffect, useState, useCallback } from "react";
-import { Icon, IconName, ICONS } from "./Icons";
-import HoldingArea from "./HoldingArea";
-import { GameState, Position, TileState } from "@/types/game";
+import { FC, useEffect } from 'react'
+import { Icon } from './Icons'
+import HoldingArea from './HoldingArea'
+import { useGameStore } from '@/store/gameStore'
 
 const Grid: FC = () => {
- const [gameState, setGameState] = useState<GameState>({
-  tiles: [],
-  holdingArea: Array(7).fill(null),
-  gridSize: 6, // 6x6 grid
- });
+  const { tiles, gridSize, initializeGame, moveTileToHoldingArea } = useGameStore()
 
- const distributeIcons = () => {
-  const totalTiles = gameState.gridSize * gameState.gridSize;
-  const iconRepetitions = Math.ceil(totalTiles / ICONS.length);
-  const allIcons = ICONS.flatMap((icon) =>
-   Array(iconRepetitions).fill(icon)
-  ).slice(0, totalTiles);
-
-  // Shuffle icons
-  for (let i = allIcons.length - 1; i > 0; i--) {
-   const j = Math.floor(Math.random() * (i + 1));
-   [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]];
-  }
-
-  return allIcons.map((icon, index) => ({
-   icon,
-   index,
-  }));
- };
-
- useEffect(() => {
-  setGameState((prev) => ({
-   ...prev,
-   tiles: distributeIcons(),
-   holdingArea: Array(7).fill(null),
-  }));
- }, []);
+  useEffect(() => {
+    initializeGame()
+  }, [initializeGame])
 
  return (
   <>
@@ -48,29 +21,13 @@ const Grid: FC = () => {
       gridTemplateColumns: `repeat(${gameState.gridSize}, 1fr)`,
      }}
     >
-     {Array(gameState.gridSize * gameState.gridSize)
+     {Array(gridSize * gridSize)
       .fill(null)
       .map((_, index) => {
-       const tile = gameState.tiles.find((t) => t.index === index);
+       const tile = tiles.find((t) => t.index === index);
        const handleTileClick = () => {
         if (tile) {
-         const firstEmptySlot = gameState.holdingArea.findIndex(
-          (slot) => slot === null
-         );
-         if (firstEmptySlot !== -1) {
-          const newHoldingArea = [...gameState.holdingArea];
-          newHoldingArea[firstEmptySlot] = tile.icon;
-
-          const newTiles = gameState.tiles.filter(
-           (t) => t.index !== tile.index
-          );
-
-          setGameState((prev) => ({
-           ...prev,
-           tiles: newTiles,
-           holdingArea: newHoldingArea,
-          }));
-         }
+          moveTileToHoldingArea(tile.index);
         }
        };
 
@@ -86,15 +43,7 @@ const Grid: FC = () => {
       })}
     </div>
    </div>
-   <HoldingArea
-    tiles={gameState.holdingArea}
-    onFull={() => {
-     setGameState((prev) => ({
-      ...prev,
-      holdingArea: Array(7).fill(null),
-     }));
-    }}
-   />
+   <HoldingArea />
   </>
  );
 };

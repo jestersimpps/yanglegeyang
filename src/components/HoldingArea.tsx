@@ -1,22 +1,20 @@
 'use client'
 
 import { FC, useEffect } from 'react'
-import { Icon, IconName } from './Icons'
+import { Icon } from './Icons'
+import { useGameStore } from '@/store/gameStore'
 
-interface HoldingAreaProps {
-  tiles: (IconName | null)[]
-  onFull?: () => void
-}
+const HoldingArea: FC = () => {
+  const { holdingArea, clearHoldingArea } = useGameStore()
 
-const HoldingArea: FC<HoldingAreaProps> = ({ tiles, onFull }) => {
   useEffect(() => {
-    if (tiles.every(tile => tile !== null)) {
-      onFull?.();
+    if (holdingArea.every(tile => tile !== null)) {
+      clearHoldingArea();
     }
-  }, [tiles, onFull]);
+  }, [holdingArea, clearHoldingArea]);
   return (
     <div className="mt-8 w-full flex justify-center gap-2">
-      {tiles.map((icon, index) => (
+      {holdingArea.map((icon, index) => (
         <div 
           key={`holding-${index}`}
           className="w-[60px] h-[60px] flex items-center justify-center border-2 border-gray-300 rounded-xl"
