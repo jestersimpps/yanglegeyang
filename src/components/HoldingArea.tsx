@@ -1,13 +1,19 @@
 'use client'
 
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { Icon, IconName } from './Icons'
 
 interface HoldingAreaProps {
   tiles: (IconName | null)[]
+  onFull?: () => void
 }
 
-const HoldingArea: FC<HoldingAreaProps> = ({ tiles }) => {
+const HoldingArea: FC<HoldingAreaProps> = ({ tiles, onFull }) => {
+  useEffect(() => {
+    if (tiles.every(tile => tile !== null)) {
+      onFull?.();
+    }
+  }, [tiles, onFull]);
   return (
     <div className="mt-8 w-full flex justify-center gap-2">
       {tiles.map((icon, index) => (

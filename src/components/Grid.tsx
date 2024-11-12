@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useCallback } from 'react'
 import { Icon, IconName, ICONS } from './Icons'
 import HoldingArea from './HoldingArea'
 import { GameState, Position, TileState } from '@/types/game'
@@ -88,10 +88,31 @@ const Grid: FC = () => {
               const tile = gameState.tiles.find(t => 
                 t.position.layer === layerIndex && t.position.index === index
               )
+              const handleTileClick = () => {
+                if (tile) {
+                  const firstEmptySlot = gameState.holdingArea.findIndex(slot => slot === null);
+                  if (firstEmptySlot !== -1) {
+                    const newHoldingArea = [...gameState.holdingArea];
+                    newHoldingArea[firstEmptySlot] = tile.icon;
+                    
+                    const newTiles = gameState.tiles.filter(t => 
+                      !(t.position.layer === tile.position.layer && t.position.index === tile.position.index)
+                    );
+
+                    setGameState(prev => ({
+                      ...prev,
+                      tiles: newTiles,
+                      holdingArea: newHoldingArea
+                    }));
+                  }
+                }
+              };
+
               return (
                 <div 
                   key={`${layerIndex}-${index}`}
                   className="aspect-square flex items-center justify-center"
+                  onClick={handleTileClick}
                 >
                   {tile && <Icon name={tile.icon} />}
                 </div>
@@ -101,7 +122,15 @@ const Grid: FC = () => {
         )
       })}
     </div>
-    <HoldingArea tiles={gameState.holdingArea} />
+    <HoldingArea 
+      tiles={gameState.holdingArea} 
+      onFull={() => {
+        setGameState(prev => ({
+          ...prev,
+          holdingArea: Array(7).fill(null)
+        }));
+      }}
+    />
     </>
   )
 }
