@@ -4,6 +4,7 @@ import { FC, useEffect } from "react";
 const UNCOVERED_TILE_COLOR = 'rgb(240, 240, 240)';
 import { Icon } from "./Icons";
 import HoldingArea from "./HoldingArea";
+import GameOptions from "./GameOptions";
 import { useGameStore } from "@/store/gameStore";
 
 const Grid: FC = () => {
@@ -15,6 +16,7 @@ const Grid: FC = () => {
 
  return (
   <>
+   <GameOptions />
    {isGameOver && (
     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
      <div className="bg-white p-4 rounded-lg shadow-lg">
