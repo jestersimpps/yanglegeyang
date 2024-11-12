@@ -31,7 +31,7 @@ const Grid: FC = () => {
   }, [])
 
   return (
-    <div className="grid grid-cols-6 gap-2 w-[360px] h-[360px]">
+    <div className="grid grid-cols-6 w-[360px] h-[360px]">
       {cells.map((icon, index) => (
         <div 
           key={index}
