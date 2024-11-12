@@ -5,7 +5,8 @@ import { Icon, IconName, ICONS } from './Icons'
 
 const Grid: FC = () => {
   const [bottomCells, setBottomCells] = useState<(IconName | null)[]>(Array(36).fill(null))
-  const [topCells, setTopCells] = useState<(IconName | null)[]>(Array(25).fill(null))
+  const [middleCells, setMiddleCells] = useState<(IconName | null)[]>(Array(25).fill(null))
+  const [topCells, setTopCells] = useState<(IconName | null)[]>(Array(36).fill(null))
 
   const distributeIcons = (cellCount: number) => {
     const totalGroups = Math.floor(cellCount / 3)
@@ -30,8 +31,12 @@ const Grid: FC = () => {
     const bottomIcons = distributeIcons(36)
     setBottomCells(bottomIcons)
     
-    // Handle top layer (5x5)
-    const topIcons = distributeIcons(25)
+    // Handle middle layer (5x5)
+    const middleIcons = distributeIcons(25)
+    setMiddleCells(middleIcons)
+    
+    // Handle top layer (6x6)
+    const topIcons = distributeIcons(36)
     setTopCells(topIcons)
   }, [])
 
@@ -49,8 +54,20 @@ const Grid: FC = () => {
         ))}
       </div>
       
-      {/* Top layer - 5x5 grid */}
+      {/* Middle layer - 5x5 grid */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] grid grid-cols-5 gap-0">
+        {middleCells.map((icon, index) => (
+          <div 
+            key={`middle-${index}`}
+            className="aspect-square flex items-center justify-center"
+          >
+            {icon && <Icon name={icon} />}
+          </div>
+        ))}
+      </div>
+
+      {/* Top layer - 6x6 grid */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] grid grid-cols-6 gap-0">
         {topCells.map((icon, index) => (
           <div 
             key={`top-${index}`}
