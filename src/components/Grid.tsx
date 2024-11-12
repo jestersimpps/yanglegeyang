@@ -8,11 +8,11 @@ import GameOptions from "./GameOptions";
 import { useGameStore } from "@/store/gameStore";
 
 const Grid: FC = () => {
- const { layers, moveTileToHoldingArea, isGameOver } = useGameStore();
+ const { layers, moveTileToHoldingArea, isGameOver, initializeGame } = useGameStore();
 
  useEffect(() => {
   initializeGame();
- }, [initializeGame]);
+ }, []);
 
  return (
   <>

@@ -59,6 +59,7 @@ const distributeIcons = (gridSize: number, layerIndex: number) => {
 };
 
 interface GameStore extends GameState {
+  initializeGame: () => void;
   moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => void;
   clearHoldingArea: () => void;
   checkAndRemoveTriplets: () => void;
