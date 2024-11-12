@@ -114,7 +114,7 @@ const Grid: FC = () => {
                   className="aspect-square flex items-center justify-center"
                   onClick={handleTileClick}
                 >
-                  {tile && <Icon name={tile.icon} />}
+                  {tile && <Icon name={tile.icon} layer={layerIndex} />}
                 </div>
               )
             })}

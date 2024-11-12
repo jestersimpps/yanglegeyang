@@ -21,7 +21,7 @@ const HoldingArea: FC<HoldingAreaProps> = ({ tiles, onFull }) => {
           key={`holding-${index}`}
           className="w-[60px] h-[60px] flex items-center justify-center border-2 border-gray-300 rounded-xl"
         >
-          {icon && <Icon name={icon} />}
+          {icon && <Icon name={icon} layer={0} />}
         </div>
       ))}
     </div>
