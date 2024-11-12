@@ -8,23 +8,24 @@ const Grid: FC = () => {
 
   useEffect(() => {
     const newCells = Array(64).fill(null)
-    let remainingCells = 64
+    const totalGroups = Math.floor(64 / 3) // 21 complete groups of 3
+    const iconRepetitions = Math.ceil(totalGroups / ICONS.length) // How many times to repeat each icon
     
-    while (remainingCells > 0) {
-      ICONS.forEach(icon => {
-        // Place icons in groups of 3 until grid is full
-        if (remainingCells >= 3) {
-          for (let i = 0; i < 3; i++) {
-            let position
-            do {
-              position = Math.floor(Math.random() * 64)
-            } while (newCells[position] !== null)
-            newCells[position] = icon
-          }
-          remainingCells -= 3
-        }
-      })
+    // Create an array with the right number of each icon
+    const allIcons = ICONS.flatMap(icon => 
+      Array(iconRepetitions * 3).fill(icon)
+    ).slice(0, 63) // Ensure we don't exceed 63 cells (21 groups * 3)
+    
+    // Shuffle the icons
+    for (let i = allIcons.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]]
     }
+    
+    // Place the icons in the grid
+    allIcons.forEach((icon, index) => {
+      newCells[index] = icon
+    })
     
     setCells(newCells)
   }, [])
