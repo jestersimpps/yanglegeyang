@@ -6,115 +6,48 @@ import HoldingArea from './HoldingArea'
 import { GameState, Position, TileState } from '@/types/game'
 
 const Grid: FC = () => {
-  const initialLayers: LayerConfig[] = [
-    { size: 6 },  // bottom layer
-    { size: 5, offset: 30 },  // middle layer
-    { size: 6 },  // top layer
-  ]
-
   const [gameState, setGameState] = useState<GameState>({
     tiles: [],
     holdingArea: Array(7).fill(null),
-    layers: initialLayers
+    gridSize: 8 // 8x8 grid
   })
 
   const distributeIcons = () => {
-    const tiles: TileState[] = []
+    const totalTiles = gameState.gridSize * gameState.gridSize
+    const iconRepetitions = Math.ceil(totalTiles / ICONS.length)
+    const allIcons = ICONS.flatMap(icon => Array(iconRepetitions).fill(icon)).slice(0, totalTiles)
     
-    // Helper function to create and shuffle icons
-    const createIcons = (count: number) => {
-      const totalGroups = Math.floor(count / 3)
-      const iconRepetitions = Math.ceil(totalGroups / ICONS.length)
-      return ICONS.flatMap(icon => 
-        Array(iconRepetitions * 3).fill(icon)
-      ).slice(0, count)
+    // Shuffle icons
+    for (let i = allIcons.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]]
     }
-
-    // Shuffle function
-    const shuffle = (array: IconName[]) => {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]
-      }
-      return array
-    }
-
-    // Create and shuffle icons for each layer
-    gameState.layers.forEach((layer, layerIndex) => {
-      const tileCount = layer.size * layer.size
-      const layerIcons = createIcons(tileCount)
-      shuffle(layerIcons)
-      
-      layerIcons.forEach((icon, index) => {
-        tiles.push({
-          icon,
-          position: { layer: layerIndex, index }
-        })
-      })
-    })
-
-    return tiles
+    
+    return allIcons.map((icon, index) => ({
+      icon,
+      index
+    }))
   }
 
   useEffect(() => {
-    const initialTiles = distributeIcons()
-    
-    // Calculate which tiles are covered
-    const tilesWithCoverage = initialTiles.map(tile => {
-      const tileLayer = tile.position.layer
-      const tileIndex = tile.position.index
-      const tileX = tileIndex % gameState.layers[tileLayer].size
-      const tileY = Math.floor(tileIndex / gameState.layers[tileLayer].size)
-      
-      // Check if any tile in higher layers covers this tile
-      const isCovered = initialTiles.some(otherTile => {
-        if (otherTile.position.layer <= tileLayer) return false
-        
-        const otherLayer = gameState.layers[otherTile.position.layer]
-        const otherIndex = otherTile.position.index
-        const otherX = otherIndex % otherLayer.size
-        const otherY = Math.floor(otherIndex / otherLayer.size)
-        
-        // Check if the tiles overlap
-        const xOverlap = Math.abs(tileX - otherX) < 1
-        const yOverlap = Math.abs(tileY - otherY) < 1
-        
-        return xOverlap && yOverlap
-      })
-      
-      return { ...tile, isCovered }
-    })
-
     setGameState(prev => ({
       ...prev,
-      tiles: tilesWithCoverage,
+      tiles: distributeIcons(),
       holdingArea: Array(7).fill(null)
     }))
   }, [])
 
   return (
     <>
-    <div className="relative w-[360px] h-[360px] perspective-[800px]">
-      {gameState.layers.map((layerConfig, layerIndex) => {
-        const size = layerConfig.size * 60 // 60px per tile
-        const offset = layerConfig.offset || 0
-        const isMiddleLayer = layerIndex > 0 && layerIndex < gameState.layers.length - 1
-
-        return (
-          <div
-            key={`layer-${layerIndex}`}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid gap-0"
-            style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              gridTemplateColumns: `repeat(${layerConfig.size}, 1fr)`,
-              zIndex: gameState.layers.length - layerIndex
-            }}
-          >
-            {Array(layerConfig.size * layerConfig.size).fill(null).map((_, index) => {
-              const tile = gameState.tiles.find(t => 
-                t.position.layer === layerIndex && t.position.index === index
-              )
+    <div className="w-[480px] h-[480px]">
+      <div
+        className="grid gap-0"
+        style={{
+          gridTemplateColumns: `repeat(${gameState.gridSize}, 1fr)`
+        }}
+      >
+        {Array(gameState.gridSize * gameState.gridSize).fill(null).map((_, index) => {
+          const tile = gameState.tiles.find(t => t.index === index)
               const handleTileClick = () => {
                 if (tile) {
                   const firstEmptySlot = gameState.holdingArea.findIndex(slot => slot === null);
@@ -136,16 +69,13 @@ const Grid: FC = () => {
               };
 
               return (
-                <div 
-                  key={`${layerIndex}-${index}`}
-                  className="aspect-square flex items-center justify-center"
-                  style={{
-                    pointerEvents: tile?.isCovered ? 'none' : 'auto'
-                  }}
-                  onClick={tile ? handleTileClick : undefined}
-                >
-                  {tile && <Icon name={tile.icon} layer={layerIndex} isCovered={tile.isCovered} />}
-                </div>
+          <div 
+            key={index}
+            className="aspect-square flex items-center justify-center"
+            onClick={tile ? handleTileClick : undefined}
+          >
+            {tile && <Icon name={tile.icon} />}
+          </div>
               )
             })}
           </div>

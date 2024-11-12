@@ -4,29 +4,16 @@ export type IconName = '🍎' | '🌟' | '🎈' | '🎮' | '🎨' | '🎭' | '�
 
 interface IconProps {
   name: IconName
-  layer: number
 }
 
-interface IconProps {
-  name: IconName
-  layer: number
-  isCovered?: boolean
-}
-
-export const Icon: FC<IconProps> = ({ name, layer, isCovered = false }) => {
+export const Icon: FC<IconProps> = ({ name }) => {
   return (
     <div className="flex items-center justify-center text-4xl w-full h-full rounded-xl shadow-lg transform transition-all hover:scale-105 hover:-translate-y-1 cursor-pointer m-0 p-0"
          style={{
-           transform: 'perspective(800px) rotateX(25deg)',
-           background: isCovered 
-             ? `linear-gradient(to bottom right, 
-                hsl(0, 0%, ${85 - layer * 15}%), 
-                hsl(0, 0%, ${95 - layer * 15}%), 
-                hsl(0, 0%, ${80 - layer * 15}%))`
-             : `linear-gradient(to bottom right, 
-                hsl(0, 0%, ${85 - 0 * 15}%), 
-                hsl(0, 0%, ${95 - 0 * 15}%), 
-                hsl(0, 0%, ${80 - 0 * 15}%))`,
+           background: `linear-gradient(to bottom right, 
+             hsl(0, 0%, 85%), 
+             hsl(0, 0%, 95%), 
+             hsl(0, 0%, 80%))`,
            boxShadow: `
              0 15px 25px -4px rgba(0, 0, 0, 0.3),
              0 8px 12px -3px rgba(0, 0, 0, 0.2),
