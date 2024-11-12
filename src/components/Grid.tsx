@@ -6,9 +6,16 @@ import HoldingArea from './HoldingArea'
 import { GameState, Position, TileState } from '@/types/game'
 
 const Grid: FC = () => {
+  const initialLayers: LayerConfig[] = [
+    { size: 6 },  // bottom layer
+    { size: 5, offset: 30 },  // middle layer
+    { size: 6 },  // top layer
+  ]
+
   const [gameState, setGameState] = useState<GameState>({
     tiles: [],
-    holdingArea: Array(7).fill(null)
+    holdingArea: Array(7).fill(null),
+    layers: initialLayers
   })
 
   const distributeIcons = () => {
@@ -23,12 +30,7 @@ const Grid: FC = () => {
       ).slice(0, count)
     }
 
-    // Create and shuffle icons for each layer
-    const bottomIcons = createIcons(36)
-    const middleIcons = createIcons(25)
-    const topIcons = createIcons(36)
-
-    // Shuffle arrays
+    // Shuffle function
     const shuffle = (array: IconName[]) => {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -37,29 +39,17 @@ const Grid: FC = () => {
       return array
     }
 
-    shuffle(bottomIcons)
-    shuffle(middleIcons)
-    shuffle(topIcons)
-
-    // Create tile states
-    bottomIcons.forEach((icon, index) => {
-      tiles.push({
-        icon,
-        position: { layer: 'bottom', index }
-      })
-    })
-
-    middleIcons.forEach((icon, index) => {
-      tiles.push({
-        icon,
-        position: { layer: 'middle', index }
-      })
-    })
-
-    topIcons.forEach((icon, index) => {
-      tiles.push({
-        icon,
-        position: { layer: 'top', index }
+    // Create and shuffle icons for each layer
+    gameState.layers.forEach((layer, layerIndex) => {
+      const tileCount = layer.size * layer.size
+      const layerIcons = createIcons(tileCount)
+      shuffle(layerIcons)
+      
+      layerIcons.forEach((icon, index) => {
+        tiles.push({
+          icon,
+          position: { layer: layerIndex, index }
+        })
       })
     })
 
@@ -68,59 +58,49 @@ const Grid: FC = () => {
 
   useEffect(() => {
     const initialTiles = distributeIcons()
-    setGameState({
+    setGameState(prev => ({
+      ...prev,
       tiles: initialTiles,
       holdingArea: Array(7).fill(null)
-    })
+    }))
   }, [])
 
   return (
     <>
     <div className="relative w-[360px] h-[360px]">
-      {/* Bottom layer - 6x6 grid */}
-      <div className="grid grid-cols-6 w-full h-full gap-0">
-        {Array(36).fill(null).map((_, index) => {
-          const tile = gameState.tiles.find(t => t.position.layer === 'bottom' && t.position.index === index)
-          return (
-            <div 
-              key={index}
-              className="aspect-square flex items-center justify-center p-0 m-0"
-            >
-              {tile && <Icon name={tile.icon} />}
-            </div>
-          )
-        })}
-      </div>
-      
-      {/* Middle layer - 5x5 grid */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] grid grid-cols-5 gap-0">
-        {Array(25).fill(null).map((_, index) => {
-          const tile = gameState.tiles.find(t => t.position.layer === 'middle' && t.position.index === index)
-          return (
-            <div 
-              key={`middle-${index}`}
-              className="aspect-square flex items-center justify-center"
-            >
-              {tile && <Icon name={tile.icon} />}
-            </div>
-          )
-        })}
-      </div>
+      {gameState.layers.map((layerConfig, layerIndex) => {
+        const size = layerConfig.size * 60 // 60px per tile
+        const offset = layerConfig.offset || 0
+        const isMiddleLayer = layerIndex > 0 && layerIndex < gameState.layers.length - 1
 
-      {/* Top layer - 6x6 grid */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] h-[360px] grid grid-cols-6 gap-0">
-        {Array(36).fill(null).map((_, index) => {
-          const tile = gameState.tiles.find(t => t.position.layer === 'top' && t.position.index === index)
-          return (
-            <div 
-              key={`top-${index}`}
-              className="aspect-square flex items-center justify-center"
-            >
-              {tile && <Icon name={tile.icon} />}
-            </div>
-          )
-        })}
-      </div>
+        return (
+          <div
+            key={`layer-${layerIndex}`}
+            className={`${isMiddleLayer ? 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' : ''} 
+                       grid gap-0`}
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              gridTemplateColumns: `repeat(${layerConfig.size}, 1fr)`,
+              zIndex: layerIndex
+            }}
+          >
+            {Array(layerConfig.size * layerConfig.size).fill(null).map((_, index) => {
+              const tile = gameState.tiles.find(t => 
+                t.position.layer === layerIndex && t.position.index === index
+              )
+              return (
+                <div 
+                  key={`${layerIndex}-${index}`}
+                  className="aspect-square flex items-center justify-center"
+                >
+                  {tile && <Icon name={tile.icon} />}
+                </div>
+              )
+            })}
+          </div>
+        )
+      })}
     </div>
     <HoldingArea tiles={gameState.holdingArea} />
     </>
