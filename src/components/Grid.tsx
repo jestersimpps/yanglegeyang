@@ -39,7 +39,7 @@ const Grid: FC = () => {
     <div className="relative w-[360px] h-[360px]">
       {/* Bottom layer - 6x6 grid */}
       <div className="grid grid-cols-6 w-full h-full">
-        {cells.map((icon, index) => (
+        {bottomCells.map((icon, index) => (
           <div 
             key={index}
             className="bg-gray-100 dark:bg-gray-800 aspect-square rounded-lg flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -51,12 +51,12 @@ const Grid: FC = () => {
       
       {/* Top layer - 5x5 grid */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] grid grid-cols-5 gap-0">
-        {Array(25).fill(null).map((_, index) => (
+        {topCells.map((icon, index) => (
           <div 
             key={`top-${index}`}
             className="aspect-square flex items-center justify-center"
           >
-            <Icon name="🎭" />
+            {icon && <Icon name={icon} />}
           </div>
         ))}
       </div>
