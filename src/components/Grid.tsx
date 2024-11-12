@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useState } from 'react'
 import { Icon, IconName, ICONS } from './Icons'
+import HoldingArea from './HoldingArea'
 
 const Grid: FC = () => {
   const [bottomCells, setBottomCells] = useState<(IconName | null)[]>(Array(36).fill(null))
@@ -78,6 +79,7 @@ const Grid: FC = () => {
         ))}
       </div>
     </div>
+    <HoldingArea tiles={Array(7).fill(null)} />
   )
 }
 
