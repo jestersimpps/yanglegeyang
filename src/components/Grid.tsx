@@ -22,11 +22,11 @@ const Grid: FC = () => {
   }, [])
 
   return (
-    <div className="grid grid-cols-8 gap-1 w-[400px] h-[400px]">
+    <div className="grid grid-cols-8 gap-2 w-[480px] h-[480px]">
       {cells.map((icon, index) => (
         <div 
           key={index}
-          className="bg-gray-200 dark:bg-gray-700 aspect-square flex items-center justify-center"
+          className="bg-gray-100 dark:bg-gray-800 aspect-square rounded-lg flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           {icon && <Icon name={icon} />}
         </div>
