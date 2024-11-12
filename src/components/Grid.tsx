@@ -15,46 +15,35 @@ const Grid: FC = () => {
   return (
     <>
       <div className="relative w-[360px] h-[360px]">
-        {layers.map((layer, layerIndex) => (
-          <div
-            key={layerIndex}
-            className="absolute top-0 left-0 w-full h-full"
-            style={{
-              transform: `translate(${layerIndex * 20}px, ${layerIndex * 20}px)`,
-              zIndex: layerIndex,
-            }}
-          >
-            <div
-              className="grid gap-0"
-              style={{
-                gridTemplateColumns: `repeat(${layer.size}, 1fr)`,
-                width: `${(layer.size / 6) * 100}%`,
-                height: `${(layer.size / 6) * 100}%`,
-              }}
-            >
-              {Array(layer.size * layer.size)
-                .fill(null)
-                .map((_, index) => {
-                  const tile = layer.tiles.find((t) => t.index === index);
-                  const handleTileClick = () => {
-                    if (tile) {
-                      moveTileToHoldingArea(tile.index, layerIndex);
-                    }
-                  };
+        {layers.flatMap((layer, layerIndex) => 
+          layer.tiles.map((tile) => {
+            const handleTileClick = () => {
+              moveTileToHoldingArea(tile.index, layerIndex);
+            };
 
-                  return (
-                    <div
-                      key={index}
-                      className="aspect-square flex items-center justify-center"
-                      onClick={tile ? handleTileClick : undefined}
-                    >
-                      {tile && <Icon name={tile.icon} layoutId={`tile-${layerIndex}-${tile.index}`} />}
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        ))}
+            // Calculate position based on the layer's grid size
+            const row = Math.floor(tile.index / layer.size);
+            const col = tile.index % layer.size;
+            const tileSize = 60; // px
+            const offset = (6 - layer.size) * tileSize / 2; // Center smaller grids
+
+            return (
+              <div
+                key={`${layerIndex}-${tile.index}`}
+                className="absolute"
+                style={{
+                  width: `${tileSize}px`,
+                  height: `${tileSize}px`,
+                  left: `${offset + col * tileSize}px`,
+                  top: `${offset + row * tileSize}px`,
+                }}
+                onClick={handleTileClick}
+              >
+                <Icon name={tile.icon} />
+              </div>
+            );
+          })
+        )}
       </div>
       <HoldingArea />
     </>
