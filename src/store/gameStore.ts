@@ -75,6 +75,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   holdingArea: Array(7).fill(null),
   currentLayer: 0,
   isGameOver: false,
+  score: 0,
+  highScore: 0,
 
   initializeGame: () => {
     set((state) => {
@@ -87,7 +89,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
         layers: updateCoveredStatus(initialLayers),
         holdingArea: Array(7).fill(null),
         currentLayer: 0,
-        isGameOver: false
+        isGameOver: false,
+        score: 0,
+        highScore: state.highScore
       };
     });
   },
@@ -136,6 +140,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set((state) => {
       const holdingArea = [...state.holdingArea];
       const iconCounts = new Map<IconName, number>();
+      let pointsEarned = 0;
       
       // Count occurrences of each icon
       holdingArea.forEach((icon) => {
@@ -148,9 +153,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
       let hasChanged = false;
       iconCounts.forEach((count, icon) => {
         if (count >= 3) {
-          // Remove exactly 3 instances of the matching icon
+          // Calculate points - bonus for matching more than 3
+          const matchCount = Math.floor(count / 3);
+          const bonus = count > 3 ? Math.floor((count - 3) * 50) : 0;
+          pointsEarned += matchCount * 100 + bonus;
+
+          // Remove matched instances of the icon
           let removed = 0;
-          for (let i = 0; i < holdingArea.length && removed < 3; i++) {
+          for (let i = 0; i < holdingArea.length && removed < (matchCount * 3); i++) {
             if (holdingArea[i] === icon) {
               holdingArea[i] = null;
               removed++;
@@ -160,7 +170,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
         }
       });
 
-      return hasChanged ? { holdingArea } : state;
+      if (hasChanged) {
+        const newScore = state.score + pointsEarned;
+        const newHighScore = Math.max(state.highScore, newScore);
+        return { 
+          holdingArea,
+          score: newScore,
+          highScore: newHighScore
+        };
+      }
+
+      return state;
     });
   },
 
