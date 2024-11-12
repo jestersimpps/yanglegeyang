@@ -102,7 +102,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => {
     set((state) => {
       const tile = state.layers[layerIndex].tiles.find((t) => t.index === tileIndex);
-      if (!tile) return state;
+      if (!tile || tile.isCovered) return state;
 
       const firstEmptySlot = state.holdingArea.findIndex((slot) => slot === null);
       if (firstEmptySlot === -1) return state;
