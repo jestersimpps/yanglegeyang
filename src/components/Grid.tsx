@@ -30,17 +30,24 @@ const Grid: FC = () => {
             return (
               <div
                 key={`${layerIndex}-${tile.index}`}
-                className="absolute rounded-md"
+                className="absolute"
                 style={{
                   width: `${tileSize}px`,
                   height: `${tileSize}px`,
                   left: `${offset + col * tileSize}px`,
                   top: `${offset + row * tileSize}px`,
-                  backgroundColor: `rgba(0, 0, 0, ${0.1 + (0.1 * layerIndex)})`,
                 }}
                 onClick={handleTileClick}
               >
-                <Icon name={tile.icon} />
+                <Icon 
+                  name={tile.icon} 
+                  style={{
+                    background: `linear-gradient(to bottom right, 
+                      hsl(0, 0%, ${85 - layerIndex * 10}%), 
+                      hsl(0, 0%, ${95 - layerIndex * 10}%), 
+                      hsl(0, 0%, ${80 - layerIndex * 10}%))`,
+                  }}
+                />
               </div>
             );
           })

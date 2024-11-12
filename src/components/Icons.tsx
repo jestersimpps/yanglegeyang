@@ -3,13 +3,15 @@ import { FC } from 'react'
 export type IconName = '🍎' | '🌟' | '🎈' | '🎮' | '🎨' | '🎭' | '💎' | '🎪'
 
 interface IconProps {
-  name: IconName
+  name: IconName;
+  style?: React.CSSProperties;
 }
 
-export const Icon: FC<IconProps> = ({ name }) => {
+export const Icon: FC<IconProps> = ({ name, style }) => {
   return (
     <div className="flex items-center justify-center text-4xl w-full h-full rounded-xl shadow-lg transform transition-all hover:scale-105 hover:-translate-y-1 cursor-pointer m-0 p-0"
          style={{
+           ...style,
            background: `linear-gradient(to bottom right, 
              hsl(0, 0%, 85%), 
              hsl(0, 0%, 95%), 
