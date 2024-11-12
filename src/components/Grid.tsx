@@ -18,7 +18,7 @@ const Grid: FC = () => {
     <div
      className="grid gap-0"
      style={{
-      gridTemplateColumns: `repeat(${gameState.gridSize}, 1fr)`,
+      gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
      }}
     >
      {Array(gridSize * gridSize)
