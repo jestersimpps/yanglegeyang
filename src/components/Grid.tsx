@@ -82,7 +82,7 @@ const Grid: FC = () => {
               width: `${size}px`,
               height: `${size}px`,
               gridTemplateColumns: `repeat(${layerConfig.size}, 1fr)`,
-              zIndex: layerIndex
+              zIndex: gameState.layers.length - layerIndex
             }}
           >
             {Array(layerConfig.size * layerConfig.size).fill(null).map((_, index) => {
