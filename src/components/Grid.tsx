@@ -38,11 +38,11 @@ const Grid: FC = () => {
   return (
     <div className="relative w-[360px] h-[360px]">
       {/* Bottom layer - 6x6 grid */}
-      <div className="grid grid-cols-6 w-full h-full">
+      <div className="grid grid-cols-6 w-full h-full gap-0">
         {bottomCells.map((icon, index) => (
           <div 
             key={index}
-            className="bg-gray-100 dark:bg-gray-800 aspect-square rounded-lg flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="aspect-square flex items-center justify-center"
           >
             {icon && <Icon name={icon} />}
           </div>
