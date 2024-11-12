@@ -4,17 +4,17 @@ import { FC, useEffect, useState } from 'react'
 import { Icon, IconName, ICONS } from './Icons'
 
 const Grid: FC = () => {
-  const [cells, setCells] = useState<(IconName | null)[]>(Array(36).fill(null))
+  const [bottomCells, setBottomCells] = useState<(IconName | null)[]>(Array(36).fill(null))
+  const [topCells, setTopCells] = useState<(IconName | null)[]>(Array(25).fill(null))
 
-  useEffect(() => {
-    const newCells = Array(36).fill(null)
-    const totalGroups = Math.floor(36 / 3) // 12 complete groups of 3
-    const iconRepetitions = Math.ceil(totalGroups / ICONS.length) // How many times to repeat each icon
+  const distributeIcons = (cellCount: number) => {
+    const totalGroups = Math.floor(cellCount / 3)
+    const iconRepetitions = Math.ceil(totalGroups / ICONS.length)
     
     // Create an array with the right number of each icon
     const allIcons = ICONS.flatMap(icon => 
       Array(iconRepetitions * 3).fill(icon)
-    ).slice(0, 36) // Fill all 36 cells (12 groups * 3)
+    ).slice(0, cellCount)
     
     // Shuffle the icons
     for (let i = allIcons.length - 1; i > 0; i--) {
@@ -22,12 +22,17 @@ const Grid: FC = () => {
       [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]]
     }
     
-    // Place the icons in the grid
-    allIcons.forEach((icon, index) => {
-      newCells[index] = icon
-    })
+    return allIcons
+  }
+
+  useEffect(() => {
+    // Handle bottom layer (6x6)
+    const bottomIcons = distributeIcons(36)
+    setBottomCells(bottomIcons)
     
-    setCells(newCells)
+    // Handle top layer (5x5)
+    const topIcons = distributeIcons(25)
+    setTopCells(topIcons)
   }, [])
 
   return (
