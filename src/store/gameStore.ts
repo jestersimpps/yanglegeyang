@@ -2,6 +2,49 @@ import { create } from 'zustand'
 import { IconName, ICONS } from '@/components/Icons'
 import { GameState } from '@/types/game'
 
+const isTileCovered = (
+  tile: TileState,
+  higherLayers: { tiles: TileState[]; size: number }[]
+): boolean => {
+  const tileSize = 60; // px
+  const row = Math.floor(tile.index / (tile.layer === 0 ? 6 : tile.layer === 1 ? 5 : 4));
+  const col = tile.index % (tile.layer === 0 ? 6 : tile.layer === 1 ? 5 : 4);
+  const offset = ((6 - (tile.layer === 0 ? 6 : tile.layer === 1 ? 5 : 4)) * tileSize) / 2;
+  const tileLeft = offset + col * tileSize;
+  const tileTop = offset + row * tileSize;
+
+  return higherLayers.some(layer => 
+    layer.tiles.some(higherTile => {
+      const higherRow = Math.floor(higherTile.index / layer.size);
+      const higherCol = higherTile.index % layer.size;
+      const higherOffset = ((6 - layer.size) * tileSize) / 2;
+      const higherLeft = higherOffset + higherCol * tileSize;
+      const higherTop = higherOffset + higherRow * tileSize;
+
+      // Check for overlap
+      return !(
+        higherLeft + tileSize <= tileLeft ||
+        higherLeft >= tileLeft + tileSize ||
+        higherTop + tileSize <= tileTop ||
+        higherTop >= tileTop + tileSize
+      );
+    })
+  );
+};
+
+const updateCoveredStatus = (layers: GameState['layers']): GameState['layers'] => {
+  return layers.map((layer, layerIndex) => ({
+    ...layer,
+    tiles: layer.tiles.map(tile => ({
+      ...tile,
+      isCovered: isTileCovered(
+        tile,
+        layers.slice(layerIndex + 1)
+      )
+    }))
+  }));
+};
+
 const distributeIcons = (gridSize: number, layerIndex: number) => {
   const totalTiles = gridSize * gridSize;
   const iconRepetitions = Math.ceil(totalTiles / ICONS.length);
@@ -38,14 +81,18 @@ export const useGameStore = create<GameStore>((set) => ({
   currentLayer: 0,
 
   initializeGame: () => {
-    set((state) => ({
-      layers: state.layers.map((layer, index) => ({
+    set((state) => {
+      const initialLayers = state.layers.map((layer, index) => ({
         ...layer,
         tiles: distributeIcons(layer.size, index)
-      })),
-      holdingArea: Array(7).fill(null),
-      currentLayer: 0
-    }));
+      }));
+      
+      return {
+        layers: updateCoveredStatus(initialLayers),
+        holdingArea: Array(7).fill(null),
+        currentLayer: 0
+      };
+    });
   },
 
   moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => {
@@ -59,12 +106,14 @@ export const useGameStore = create<GameStore>((set) => ({
       const newHoldingArea = [...state.holdingArea];
       newHoldingArea[firstEmptySlot] = tile.icon;
 
+      const newLayers = state.layers.map((layer, idx) => 
+        idx === layerIndex 
+          ? { ...layer, tiles: layer.tiles.filter((t) => t.index !== tileIndex) }
+          : layer
+      );
+
       return {
-        layers: state.layers.map((layer, idx) => 
-          idx === layerIndex 
-            ? { ...layer, tiles: layer.tiles.filter((t) => t.index !== tileIndex) }
-            : layer
-        ),
+        layers: updateCoveredStatus(newLayers),
         holdingArea: newHoldingArea,
       };
     });

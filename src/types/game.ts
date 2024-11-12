@@ -2,6 +2,7 @@ export type TileState = {
   icon: IconName
   index: number
   layer: number
+  isCovered: boolean
 }
 
 export type LayerConfig = {
