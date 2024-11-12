@@ -70,6 +70,7 @@ interface GameStore extends GameState {
   moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => void;
   clearHoldingArea: () => void;
   checkAndRemoveTriplets: () => void;
+  checkGameOver: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -80,6 +81,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   ],
   holdingArea: Array(7).fill(null),
   currentLayer: 0,
+  isGameOver: false,
 
   initializeGame: () => {
     set((state) => {
@@ -91,7 +93,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return {
         layers: updateCoveredStatus(initialLayers),
         holdingArea: Array(7).fill(null),
-        currentLayer: 0
+        currentLayer: 0,
+        isGameOver: false
       };
     });
   },
@@ -119,10 +122,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
         holdingArea: newHoldingArea,
       });
       
-      // Then check for triplets
+      // Check for triplets
       get().checkAndRemoveTriplets();
       
-      // Return the current state after triplet removal
+      // Check for game over
+      get().checkGameOver();
+      
+      // Return the current state after all updates
       return get();
     });
   },
@@ -162,6 +168,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
 
       return hasChanged ? { holdingArea } : state;
+    });
+  },
+
+  checkGameOver: () => {
+    set((state) => {
+      const isFull = !state.holdingArea.includes(null);
+      return { isGameOver: isFull };
     });
   },
 }));

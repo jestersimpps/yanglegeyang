@@ -17,4 +17,5 @@ export type GameState = {
   }[]
   holdingArea: (IconName | null)[]
   currentLayer: number
+  isGameOver: boolean
 }
