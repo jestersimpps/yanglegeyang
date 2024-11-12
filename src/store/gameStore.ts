@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { IconName, ICONS } from '@/components/Icons'
 import { GameState } from '@/types/game'
 
-const distributeIcons = (gridSize: number) => {
+const distributeIcons = (gridSize: number, layerIndex: number) => {
   const totalTiles = gridSize * gridSize;
   const iconRepetitions = Math.ceil(totalTiles / ICONS.length);
   const allIcons = ICONS.flatMap((icon) =>
@@ -18,30 +18,39 @@ const distributeIcons = (gridSize: number) => {
   return allIcons.map((icon, index) => ({
     icon,
     index,
+    layer: layerIndex
   }));
 };
 
 interface GameStore extends GameState {
   initializeGame: () => void;
-  moveTileToHoldingArea: (tileIndex: number) => void;
+  moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => void;
   clearHoldingArea: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
-  tiles: [],
+  layers: [
+    { tiles: [], size: 6 },  // Bottom layer
+    { tiles: [], size: 5 },  // Middle layer
+    { tiles: [], size: 4 }   // Top layer
+  ],
   holdingArea: Array(7).fill(null),
-  gridSize: 6,
+  currentLayer: 0,
 
   initializeGame: () => {
     set((state) => ({
-      tiles: distributeIcons(state.gridSize),
+      layers: state.layers.map((layer, index) => ({
+        ...layer,
+        tiles: distributeIcons(layer.size, index)
+      })),
       holdingArea: Array(7).fill(null),
+      currentLayer: 0
     }));
   },
 
-  moveTileToHoldingArea: (tileIndex: number) => {
+  moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => {
     set((state) => {
-      const tile = state.tiles.find((t) => t.index === tileIndex);
+      const tile = state.layers[layerIndex].tiles.find((t) => t.index === tileIndex);
       if (!tile) return state;
 
       const firstEmptySlot = state.holdingArea.findIndex((slot) => slot === null);
@@ -51,7 +60,11 @@ export const useGameStore = create<GameStore>((set) => ({
       newHoldingArea[firstEmptySlot] = tile.icon;
 
       return {
-        tiles: state.tiles.filter((t) => t.index !== tileIndex),
+        layers: state.layers.map((layer, idx) => 
+          idx === layerIndex 
+            ? { ...layer, tiles: layer.tiles.filter((t) => t.index !== tileIndex) }
+            : layer
+        ),
         holdingArea: newHoldingArea,
       };
     });

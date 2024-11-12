@@ -1,10 +1,19 @@
 export type TileState = {
   icon: IconName
   index: number
+  layer: number
+}
+
+export type LayerConfig = {
+  size: number
+  offset: { x: number; y: number }
 }
 
 export type GameState = {
-  tiles: TileState[]
+  layers: {
+    tiles: TileState[]
+    size: number
+  }[]
   holdingArea: (IconName | null)[]
-  gridSize: number
+  currentLayer: number
 }
