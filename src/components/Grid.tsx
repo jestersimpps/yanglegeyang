@@ -67,7 +67,7 @@ const Grid: FC = () => {
 
   return (
     <>
-    <div className="relative w-[360px] h-[360px]">
+    <div className="relative w-[360px] h-[360px] perspective-[800px]">
       {gameState.layers.map((layerConfig, layerIndex) => {
         const size = layerConfig.size * 60 // 60px per tile
         const offset = layerConfig.offset || 0
@@ -76,8 +76,7 @@ const Grid: FC = () => {
         return (
           <div
             key={`layer-${layerIndex}`}
-            className={`${isMiddleLayer ? 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' : ''} 
-                       grid gap-0`}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid gap-0"
             style={{
               width: `${size}px`,
               height: `${size}px`,
