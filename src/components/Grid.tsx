@@ -58,9 +58,36 @@ const Grid: FC = () => {
 
   useEffect(() => {
     const initialTiles = distributeIcons()
+    
+    // Calculate which tiles are covered
+    const tilesWithCoverage = initialTiles.map(tile => {
+      const tileLayer = tile.position.layer
+      const tileIndex = tile.position.index
+      const tileX = tileIndex % gameState.layers[tileLayer].size
+      const tileY = Math.floor(tileIndex / gameState.layers[tileLayer].size)
+      
+      // Check if any tile in higher layers covers this tile
+      const isCovered = initialTiles.some(otherTile => {
+        if (otherTile.position.layer <= tileLayer) return false
+        
+        const otherLayer = gameState.layers[otherTile.position.layer]
+        const otherIndex = otherTile.position.index
+        const otherX = otherIndex % otherLayer.size
+        const otherY = Math.floor(otherIndex / otherLayer.size)
+        
+        // Check if the tiles overlap
+        const xOverlap = Math.abs(tileX - otherX) < 1
+        const yOverlap = Math.abs(tileY - otherY) < 1
+        
+        return xOverlap && yOverlap
+      })
+      
+      return { ...tile, isCovered }
+    })
+
     setGameState(prev => ({
       ...prev,
-      tiles: initialTiles,
+      tiles: tilesWithCoverage,
       holdingArea: Array(7).fill(null)
     }))
   }, [])
@@ -114,7 +141,7 @@ const Grid: FC = () => {
                   className="aspect-square flex items-center justify-center"
                   onClick={handleTileClick}
                 >
-                  {tile && <Icon name={tile.icon} layer={layerIndex} />}
+                  {tile && <Icon name={tile.icon} layer={layerIndex} isCovered={tile.isCovered} />}
                 </div>
               )
             })}

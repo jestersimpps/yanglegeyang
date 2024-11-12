@@ -11,6 +11,7 @@ export type LayerConfig = {
 export type TileState = {
   icon: IconName
   position: Position
+  isCovered?: boolean
 }
 
 export type GameState = {
