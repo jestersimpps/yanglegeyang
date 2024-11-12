@@ -13,7 +13,7 @@ const HoldingArea: FC<HoldingAreaProps> = ({ tiles }) => {
       {tiles.map((icon, index) => (
         <div 
           key={`holding-${index}`}
-          className="w-12 h-12 flex items-center justify-center"
+          className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 rounded-xl"
         >
           {icon && <Icon name={icon} />}
         </div>
