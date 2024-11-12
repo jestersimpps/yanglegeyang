@@ -72,7 +72,7 @@ interface GameStore extends GameState {
   checkAndRemoveTriplets: () => void;
 }
 
-export const useGameStore = create<GameStore>((set) => ({
+export const useGameStore = create<GameStore>((set, get) => ({
   layers: [
     { tiles: [], size: 6 },  // Bottom layer
     { tiles: [], size: 5 },  // Middle layer
