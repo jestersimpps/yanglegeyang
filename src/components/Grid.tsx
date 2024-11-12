@@ -139,7 +139,10 @@ const Grid: FC = () => {
                 <div 
                   key={`${layerIndex}-${index}`}
                   className="aspect-square flex items-center justify-center"
-                  onClick={handleTileClick}
+                  style={{
+                    pointerEvents: tile?.isCovered ? 'none' : 'auto'
+                  }}
+                  onClick={tile ? handleTileClick : undefined}
                 >
                   {tile && <Icon name={tile.icon} layer={layerIndex} isCovered={tile.isCovered} />}
                 </div>
