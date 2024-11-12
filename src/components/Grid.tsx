@@ -42,6 +42,7 @@ const Grid: FC = () => {
   }, [])
 
   return (
+    <>
     <div className="relative w-[360px] h-[360px]">
       {/* Bottom layer - 6x6 grid */}
       <div className="grid grid-cols-6 w-full h-full gap-0">
@@ -80,6 +81,7 @@ const Grid: FC = () => {
       </div>
     </div>
     <HoldingArea tiles={Array(7).fill(null)} />
+    </>
   )
 }
 
