@@ -54,7 +54,7 @@ const Grid: FC = () => {
          name={tile.icon}
          style={{
           background: tile.isCovered 
-            ? `rgb(${60 + layerIndex * 30}, ${60 + layerIndex * 30}, ${60 + layerIndex * 30})`
+            ? `rgb(${60 + layerIndex * 50}, ${60 + layerIndex * 50}, ${60 + layerIndex * 50})`
             : UNCOVERED_TILE_COLOR,
           border: `1px solid black`,
          }}
