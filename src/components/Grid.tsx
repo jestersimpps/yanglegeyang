@@ -55,9 +55,7 @@ const Grid: FC = () => {
                     const newHoldingArea = [...gameState.holdingArea];
                     newHoldingArea[firstEmptySlot] = tile.icon;
                     
-                    const newTiles = gameState.tiles.filter(t => 
-                      !(t.position.layer === tile.position.layer && t.position.index === tile.position.index)
-                    );
+                    const newTiles = gameState.tiles.filter(t => t.index !== tile.index);
 
                     setGameState(prev => ({
                       ...prev,
