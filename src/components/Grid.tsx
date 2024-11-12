@@ -9,7 +9,7 @@ const Grid: FC = () => {
  const [gameState, setGameState] = useState<GameState>({
   tiles: [],
   holdingArea: Array(7).fill(null),
-  gridSize: 8, // 8x8 grid
+  gridSize: 6, // 6x6 grid
  });
 
  const distributeIcons = () => {
@@ -41,7 +41,7 @@ const Grid: FC = () => {
 
  return (
   <>
-   <div className="w-[480px] h-[480px]">
+   <div className="w-[360px] h-[360px]">
     <div
      className="grid gap-0"
      style={{
