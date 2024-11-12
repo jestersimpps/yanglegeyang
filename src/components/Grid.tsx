@@ -42,7 +42,7 @@ const Grid: FC = () => {
         <Icon
          name={tile.icon}
          style={{
-          background: `rgb(${192 - layerIndex * 30}, ${192 - layerIndex * 30}, ${192 - layerIndex * 30})`,
+          background: `rgb(${30 + layerIndex * 30}, ${30 + layerIndex * 30}, ${30 + layerIndex * 30})`,
           border: `1px solid black`,
          }}
         />
