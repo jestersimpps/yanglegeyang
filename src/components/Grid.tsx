@@ -8,7 +8,7 @@ import GameOptions from "./GameOptions";
 import { useGameStore } from "@/store/gameStore";
 
 const Grid: FC = () => {
- const { layers, initializeGame, moveTileToHoldingArea, isGameOver } = useGameStore();
+ const { layers, moveTileToHoldingArea, isGameOver } = useGameStore();
 
  useEffect(() => {
   initializeGame();
