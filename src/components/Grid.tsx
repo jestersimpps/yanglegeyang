@@ -30,12 +30,13 @@ const Grid: FC = () => {
             return (
               <div
                 key={`${layerIndex}-${tile.index}`}
-                className="absolute"
+                className="absolute rounded-md"
                 style={{
                   width: `${tileSize}px`,
                   height: `${tileSize}px`,
                   left: `${offset + col * tileSize}px`,
                   top: `${offset + row * tileSize}px`,
+                  backgroundColor: `rgba(0, 0, 0, ${0.1 + (0.1 * layerIndex)})`,
                 }}
                 onClick={handleTileClick}
               >
