@@ -32,7 +32,7 @@ export const useGameStore = create<GameStore>((set) => ({
   layers: [
     { tiles: [], size: 6 },  // Bottom layer
     { tiles: [], size: 5 },  // Middle layer
-    { tiles: [], size: 4 }   // Top layer
+    // { tiles: [], size: 4 }   // Top layer
   ],
   holdingArea: Array(7).fill(null),
   currentLayer: 0,
