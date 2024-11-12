@@ -69,6 +69,7 @@ interface GameStore extends GameState {
   initializeGame: () => void;
   moveTileToHoldingArea: (tileIndex: number, layerIndex: number) => void;
   clearHoldingArea: () => void;
+  checkAndRemoveTriplets: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -112,10 +113,15 @@ export const useGameStore = create<GameStore>((set) => ({
           : layer
       );
 
-      return {
+      const newState = {
         layers: updateCoveredStatus(newLayers),
         holdingArea: newHoldingArea,
       };
+
+      // Set the new state and then check for triplets
+      set(newState);
+      get().checkAndRemoveTriplets();
+      return newState;
     });
   },
 
@@ -123,5 +129,37 @@ export const useGameStore = create<GameStore>((set) => ({
     set(() => ({
       holdingArea: Array(7).fill(null),
     }));
+  },
+
+  checkAndRemoveTriplets: () => {
+    set((state) => {
+      const holdingArea = [...state.holdingArea];
+      const iconCounts = new Map<IconName, number>();
+      
+      // Count occurrences of each icon
+      holdingArea.forEach((icon) => {
+        if (icon) {
+          iconCounts.set(icon, (iconCounts.get(icon) || 0) + 1);
+        }
+      });
+
+      // Check for triplets and remove them
+      let hasChanged = false;
+      iconCounts.forEach((count, icon) => {
+        if (count >= 3) {
+          // Remove exactly 3 instances of the matching icon
+          let removed = 0;
+          for (let i = 0; i < holdingArea.length && removed < 3; i++) {
+            if (holdingArea[i] === icon) {
+              holdingArea[i] = null;
+              removed++;
+            }
+          }
+          hasChanged = true;
+        }
+      });
+
+      return hasChanged ? { holdingArea } : state;
+    });
   },
 }));
