@@ -1,3 +1,5 @@
+import { IconName } from "@/components/Icons"
+
 export type TileState = {
   icon: IconName
   index: number
@@ -16,7 +18,6 @@ export type GameState = {
     size: number
   }[]
   holdingArea: (IconName | null)[]
-  currentLayer: number
   isGameOver: boolean
   score: number
   highScore: number
