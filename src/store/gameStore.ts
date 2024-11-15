@@ -47,12 +47,38 @@ const updateCoveredStatus = (
  }));
 };
 
+// Simple seeded random number generator
+const seededRandom = (seed: number) => {
+  let state = seed;
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 0xFFFFFFFF;
+  };
+};
+
 const distributeIcons = (gridSize: number, layerIndex: number) => {
  const totalTiles = gridSize * gridSize;
- // Use a seeded random number generator or predetermined pattern
- const allIcons: IconName[] = Array(totalTiles)
+ const random = seededRandom(layerIndex + gridSize); // Seed based on layer and size
+ 
+ // Create double the icons needed to ensure pairs
+ const doubledIcons: IconName[] = Array(Math.ceil(totalTiles / 3) * 3)
   .fill(null)
-  .map((_, i) => ICONS[i % ICONS.length]);
+  .map(() => ICONS[Math.floor(random() * ICONS.length)]);
+
+ // Ensure we have multiples of 3 for each icon type
+ for (let i = 0; i < doubledIcons.length; i += 3) {
+   doubledIcons[i + 1] = doubledIcons[i];
+   doubledIcons[i + 2] = doubledIcons[i];
+ }
+
+ // Shuffle the icons using Fisher-Yates with seeded random
+ for (let i = doubledIcons.length - 1; i > 0; i--) {
+   const j = Math.floor(random() * (i + 1));
+   [doubledIcons[i], doubledIcons[j]] = [doubledIcons[j], doubledIcons[i]];
+ }
+
+ // Take only the tiles we need
+ const allIcons = doubledIcons.slice(0, totalTiles);
 
  return allIcons.map((icon, index) => ({
   icon,
