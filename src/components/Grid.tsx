@@ -1,18 +1,14 @@
 "use client";
 
-import { FC, useEffect } from "react";
-const UNCOVERED_TILE_COLOR = 'rgb(240, 240, 240)';
+import { FC } from "react";
+const UNCOVERED_TILE_COLOR = "rgb(240, 240, 240)";
 import { Icon } from "./Icons";
 import HoldingArea from "./HoldingArea";
 import GameOptions from "./GameOptions";
 import { useGameStore } from "@/store/gameStore";
 
 const Grid: FC = () => {
- const { layers, moveTileToHoldingArea, isGameOver, initializeGame } = useGameStore();
-
- useEffect(() => {
-  initializeGame();
- }, []);
+ const { layers, moveTileToHoldingArea, isGameOver } = useGameStore();
 
  return (
   <>
@@ -53,9 +49,11 @@ const Grid: FC = () => {
         <Icon
          name={tile.icon}
          style={{
-          background: tile.isCovered 
-            ? `rgb(${60 + layerIndex * 50}, ${60 + layerIndex * 50}, ${60 + layerIndex * 50})`
-            : UNCOVERED_TILE_COLOR,
+          background: tile.isCovered
+           ? `rgb(${60 + layerIndex * 50}, ${60 + layerIndex * 50}, ${
+              60 + layerIndex * 50
+             })`
+           : UNCOVERED_TILE_COLOR,
           border: `1px solid black`,
          }}
         />
