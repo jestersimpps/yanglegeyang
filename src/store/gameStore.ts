@@ -49,9 +49,10 @@ const updateCoveredStatus = (
 
 const distributeIcons = (gridSize: number, layerIndex: number) => {
  const totalTiles = gridSize * gridSize;
+ // Use a seeded random number generator or predetermined pattern
  const allIcons: IconName[] = Array(totalTiles)
   .fill(null)
-  .map(() => ICONS[Math.floor(Math.random() * ICONS.length)]);
+  .map((_, i) => ICONS[i % ICONS.length]);
 
  return allIcons.map((icon, index) => ({
   icon,
