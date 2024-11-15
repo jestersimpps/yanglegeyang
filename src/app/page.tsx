@@ -1,13 +1,13 @@
 "use client";
 
 import Grid from "@/components/Grid";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useGameStore } from "@/store/gameStore";
 
 export default function Home() {
   const initializeGame = useGameStore((state) => state.initializeGame);
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     initializeGame();
   }, [initializeGame]);
 
