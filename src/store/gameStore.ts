@@ -58,27 +58,27 @@ const seededRandom = (seed: number) => {
 
 const distributeIcons = (gridSize: number, layerIndex: number) => {
  const totalTiles = gridSize * gridSize;
- const random = seededRandom(layerIndex + gridSize); // Seed based on layer and size
+ const random = seededRandom(layerIndex + gridSize);
  
- // Create double the icons needed to ensure pairs
- const doubledIcons: IconName[] = Array(Math.ceil(totalTiles / 3) * 3)
-  .fill(null)
-  .map(() => ICONS[Math.floor(random() * ICONS.length)]);
-
- // Ensure we have multiples of 3 for each icon type
- for (let i = 0; i < doubledIcons.length; i += 3) {
-   doubledIcons[i + 1] = doubledIcons[i];
-   doubledIcons[i + 2] = doubledIcons[i];
+ // First, ensure all icons are used at least once
+ let allIcons: IconName[] = [...ICONS];
+ 
+ // Fill the remaining slots to reach a multiple of 3
+ while (allIcons.length < Math.ceil(totalTiles / 3) * 3) {
+   allIcons.push(ICONS[Math.floor(random() * ICONS.length)]);
  }
 
+ // Triple each icon to ensure we have sets of three
+ allIcons = allIcons.flatMap(icon => [icon, icon, icon]);
+
  // Shuffle the icons using Fisher-Yates with seeded random
- for (let i = doubledIcons.length - 1; i > 0; i--) {
+ for (let i = allIcons.length - 1; i > 0; i--) {
    const j = Math.floor(random() * (i + 1));
-   [doubledIcons[i], doubledIcons[j]] = [doubledIcons[j], doubledIcons[i]];
+   [allIcons[i], allIcons[j]] = [allIcons[j], allIcons[i]];
  }
 
  // Take only the tiles we need
- const allIcons = doubledIcons.slice(0, totalTiles);
+ allIcons = allIcons.slice(0, totalTiles);
 
  return allIcons.map((icon, index) => ({
   icon,
